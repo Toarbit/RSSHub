@@ -39,6 +39,32 @@ Refer to [Quick Start](https://docs.rsshub.app/joinus/)
 
 Refer to [Deployment](https://docs.rsshub.app/deploy/)
 
+## Local Dev
+
+### 安装依赖
+开始之前，您需要安装 RSSHub 的依赖项。您可以在 RSSHub 的根目录下运行以下命令来完成安装：
+
+```bash
+pnpm i
+```
+
+### 开始调试
+一旦您成功安装了依赖，您可以通过运行以下命令来开始调试 RSSHub：
+
+```bash
+pnpm dev
+```
+
+请务必密切关注控制台输出的任何错误消息或其他有用的信息，这些信息可以帮助您诊断和解决问题。另外，如果您遇到任何困难，不要犹豫向 RSSHub 文档或社区寻求帮助。
+
+要查看您所做更改的结果，请在浏览器中打开 `http://localhost:1200`。您将能够在浏览器中自动反映您对代码的更改。
+
+### 编译
+
+```bash
+pnpm build
+```
+
 ## Special Thanks
 
 <div align="center">
