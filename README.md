@@ -65,6 +65,16 @@ pnpm dev
 pnpm build
 ```
 
+## 本地更新
+```bash
+git fetch
+pnpm i
+pnpm build
+pnpm start
+```
+
+
+
 ## Special Thanks
 
 <div align="center">
