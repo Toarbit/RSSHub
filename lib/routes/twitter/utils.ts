@@ -1,4 +1,4 @@
-import URL from 'url';
+import URL from 'node:url';
 import { config } from '@/config';
 import { TwitterApi } from 'twitter-api-v2';
 import { fallback, queryToBoolean, queryToInteger } from '@/utils/readable-social';
@@ -94,19 +94,20 @@ const ProcessFeed = (ctx, { data = [] }, params = {}) => {
 
     const formatVideo = (media, extraAttrs = '') => {
         let content = '';
-        const video = media.video_info.variants.reduce((video, item) => {
-            if ((item.bitrate || 0) > (video.bitrate || -Infinity)) {
-                video = item;
-            }
-            return video;
-        }, {});
+        let bestVideo = null;
 
-        if (video.url) {
+        for (const item of media.video_info.variants) {
+            if (!bestVideo || (item.bitrate || 0) > (bestVideo.bitrate || -Infinity)) {
+                bestVideo = item;
+            }
+        }
+
+        if (bestVideo && bestVideo.url) {
             const gifAutoPlayAttr = media.type === 'animated_gif' ? `autoplay loop muted webkit-playsinline playsinline` : '';
             if (!readable) {
                 content += '<br>';
             }
-            content += `<video width="${media.sizes.large.w}" height="${media.sizes.large.h}" src='${video.url}' ${gifAutoPlayAttr} controls='controls' poster='${getOriginalImg(media.media_url_https)}' ${extraAttrs}></video>`;
+            content += `<video width="${media.sizes.large.w}" height="${media.sizes.large.h}" src='${bestVideo.url}' ${gifAutoPlayAttr} controls='controls' poster='${getOriginalImg(media.media_url_https)}' ${extraAttrs}></video>`;
         }
 
         return content;
@@ -458,24 +459,24 @@ if (config.twitter.consumer_key && config.twitter.consumer_secret) {
 }
 
 const parseRouteParams = (routeParams) => {
-    let count, exclude_replies, include_rts, only_media;
+    let count, include_replies, include_rts, only_media;
     let force_web_api = false;
     switch (routeParams) {
         case 'exclude_rts_replies':
         case 'exclude_replies_rts':
-            exclude_replies = true;
+            include_replies = false;
             include_rts = false;
 
             break;
 
-        case 'exclude_replies':
-            exclude_replies = true;
+        case 'include_replies':
+            include_replies = true;
             include_rts = true;
 
             break;
 
         case 'exclude_rts':
-            exclude_replies = false;
+            include_replies = false;
             include_rts = false;
 
             break;
@@ -483,13 +484,13 @@ const parseRouteParams = (routeParams) => {
         default: {
             const parsed = new URLSearchParams(routeParams);
             count = fallback(undefined, queryToInteger(parsed.get('count')));
-            exclude_replies = fallback(undefined, queryToBoolean(parsed.get('excludeReplies')), false);
+            include_replies = fallback(undefined, queryToBoolean(parsed.get('includeReplies')), false);
             include_rts = fallback(undefined, queryToBoolean(parsed.get('includeRts')), true);
             force_web_api = fallback(undefined, queryToBoolean(parsed.get('forceWebApi')), false);
             only_media = fallback(undefined, queryToBoolean(parsed.get('onlyMedia')), false);
         }
     }
-    return { count, exclude_replies, include_rts, force_web_api, only_media };
+    return { count, include_replies, include_rts, force_web_api, only_media };
 };
 
 export const excludeRetweet = function (tweets) {

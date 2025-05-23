@@ -164,6 +164,10 @@ export type Config = {
     game4399: {
         cookie?: string;
     };
+    gelbooru: {
+        apiKey?: string;
+        userId?: string;
+    };
     github: {
         access_token?: string;
     };
@@ -199,6 +203,9 @@ export type Config = {
     };
     javdb: {
         session?: string;
+    };
+    jumeili: {
+        cookie?: string;
     };
     keylol: {
         cookie?: string;
@@ -288,6 +295,7 @@ export type Config = {
     };
     saraba1st: {
         cookie?: string;
+        host?: string;
     };
     sehuatang: {
         cookie?: string;
@@ -597,6 +605,10 @@ const calculateValue = () => {
         game4399: {
             cookie: envs.GAME_4399,
         },
+        gelbooru: {
+            apiKey: envs.GELBOORU_API_KEY,
+            userId: envs.GELBOORU_USER_ID,
+        },
         github: {
             access_token: envs.GITHUB_ACCESS_TOKEN,
         },
@@ -610,7 +622,6 @@ const calculateValue = () => {
             cookies: envs.GUOZAOKE_COOKIES,
         },
         hefeng: {
-            // weather
             key: envs.HEFENG_KEY,
         },
         infzm: {
@@ -633,6 +644,9 @@ const calculateValue = () => {
         },
         javdb: {
             session: envs.JAVDB_SESSION,
+        },
+        jumeili: {
+            cookie: envs.JUMEILI_COOKIE,
         },
         keylol: {
             cookie: envs.KEYLOL_COOKIE,
@@ -722,6 +736,7 @@ const calculateValue = () => {
         },
         saraba1st: {
             cookie: envs.SARABA1ST_COOKIE,
+            host: envs.SARABA1ST_HOST || 'https://stage1st.com',
         },
         sehuatang: {
             cookie: envs.SEHUATANG_COOKIE,
