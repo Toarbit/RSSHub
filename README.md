@@ -65,15 +65,35 @@ pnpm dev
 pnpm build
 ```
 
-## 本地更新
+### 本地更新
 ```bash
-git fetch
+git pull
 pnpm i
 pnpm build
 pnpm start
 ```
 
-
+### 修复 youtubei.js 编译错误
+[参考内容：Use YouTube.js with a Proxy Service](https://kellenmace.com/blog/youtube.js-with-proxy)
+```typescript
+lib/routes/youtube/api/youtubei.ts
+/**
+ * 为 youtubei.js 创建一个代理实例
+ * 以便在需要时使用代理服务器
+ */
+const proxyAgent = new ProxyAgent(
+	`http://127.0.0.1:7897`
+);
+// const innertubePromise = Innertube.create();
+const innertubePromise = Innertube.create({
+    fetch(input: RequestInfo | URL, init?: RequestInit) {
+        return Platform.shim.fetch(input, {
+            ...init,
+            dispatcher: proxyAgent,
+        })
+    }
+});
+```
 
 ## Special Thanks
 

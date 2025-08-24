@@ -1,11 +1,25 @@
 import { getSubtitles } from 'youtube-caption-extractor';
 import cache from '@/utils/cache';
-import { Innertube } from 'youtubei.js';
+import { Innertube, Platform } from 'youtubei.js';
 import utils, { getVideoUrl } from '../utils';
 import { Data } from '@/types';
 import { parseRelativeDate } from '@/utils/parse-date';
+import { ProxyAgent } from 'undici';
 
-const innertubePromise = Innertube.create();
+/**
+ * 为 youtubei.js 创建一个代理实例
+ * 以便在需要时使用代理服务器
+ */
+const proxyAgent = new ProxyAgent(`http://127.0.0.1:7897`);
+// const innertubePromise = Innertube.create();
+const innertubePromise = Innertube.create({
+    fetch(input: RequestInfo | URL, init?: RequestInit) {
+        return Platform.shim.fetch(input, {
+            ...init,
+            dispatcher: proxyAgent,
+        });
+    },
+});
 
 function pad(n: number, width: number = 2) {
     return String(n).padStart(width, '0');
